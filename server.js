@@ -4,6 +4,9 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const app = express();
 
+// TODO: add cleaning of the uploads folder, everytime new upload is made, for server space presservation sake
+
+// taken from multer documentation
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'uploads/')
@@ -23,11 +26,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/public', express.static(process.cwd() + '/public'));
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
 	res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.get('/hello', function (req, res) {
+app.get('/hello', (req, res) => {
 	res.json({ greetings: "Hello, API" });
 });
 
@@ -42,7 +45,7 @@ app.post('/api/fileanalyse', (req, res) => {
 				name: req.file.originalname,
 				size: req.file.size,
 				type: req.file.mimetype
-			}
+			};
 			res.json(resObject);
 		}
 	});
