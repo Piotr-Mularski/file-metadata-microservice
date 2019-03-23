@@ -2,14 +2,18 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const bodyParser = require('body-parser');
+const path = require('path');
+
 const app = express();
 
 // TODO: add cleaning of the uploads folder, everytime new upload is made, for server space presservation sake
 
 // taken from multer documentation
+// ? NOTE: WHEN PROVIDING DESTINATION AS A FUNCTION, FOLDER FOR THE UPLOADS MUST BE CREATED BY HAND
+
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, 'uploads/')
+		cb(null, path.join(__dirname, '/uploads/'))
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname)
@@ -35,6 +39,7 @@ app.get('/hello', (req, res) => {
 });
 
 app.post('/api/fileanalyse', (req, res) => {
+	// multer error handling taken from documentation
 	upload(req, res, (err) => {
 		if(err && err.code === 'LIMIT_FILE_SIZE') {
 			res.json({ error: 'File size too large. Maximum file Size is 5 Megabytes' });
